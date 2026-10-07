@@ -1,20 +1,22 @@
 import type { CellValue, Column, ColumnFilter, FilterValues, Sort } from './types.ts'
 
+const textCollator = new Intl.Collator(undefined, { sensitivity: 'base', numeric: true })
+
 export function nextSort(current: Sort | null, columnId: string): Sort | null {
   if (current?.columnId !== columnId) return { columnId, direction: 'asc' }
   if (current.direction === 'asc') return { columnId, direction: 'desc' }
   return null
 }
 
+function searchableText<Row>(column: Column<Row>, row: Row): string {
+  return column.text ? column.text(row) : String(column.value(row) ?? '')
+}
+
 export function searchRows<Row>(rows: Row[], columns: Column<Row>[], query: string): Row[] {
   const needle = query.trim().toLowerCase()
   if (!needle) return rows
   return rows.filter((row) =>
-    columns.some((column) =>
-      String(column.value(row) ?? '')
-        .toLowerCase()
-        .includes(needle),
-    ),
+    columns.some((column) => searchableText(column, row).toLowerCase().includes(needle)),
   )
 }
 
@@ -34,7 +36,7 @@ function compareValues(a: CellValue, b: CellValue): number {
   if (b == null) return -1
   if (typeof a === 'number' && typeof b === 'number') return a - b
   if (typeof a === 'boolean' && typeof b === 'boolean') return Number(a) - Number(b)
-  return String(a).localeCompare(String(b), undefined, { sensitivity: 'base', numeric: true })
+  return textCollator.compare(String(a), String(b))
 }
 
 export function sortRows<Row>(rows: Row[], columns: Column<Row>[], sort: Sort | null): Row[] {

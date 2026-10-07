@@ -1,4 +1,5 @@
 import { Navigate, NavLink, Route, Routes } from 'react-router'
+import TodoPage from './features/todo/TodoPage.tsx'
 
 const questions = [
   { path: '/todo', label: 'Q1 Todo' },
@@ -40,7 +41,7 @@ export default function App() {
       <main className="mx-auto max-w-3xl px-4 py-8">
         <Routes>
           <Route path="/" element={<Navigate to="/todo" replace />} />
-          <Route path="/todo" element={<NotBuiltYet title="Todo App" />} />
+          <Route path="/todo" element={<TodoPage />} />
           <Route path="/search" element={<NotBuiltYet title="Live Search" />} />
           <Route path="/wizard" element={<NotBuiltYet title="Registration Wizard" />} />
           <Route path="/table" element={<NotBuiltYet title="Data Table" />} />

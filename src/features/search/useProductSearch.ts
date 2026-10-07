@@ -8,7 +8,6 @@ export type SearchState =
   | { status: 'success'; products: Product[] }
 
 type SettledResult = {
-  /** Identifies the request this result belongs to; a stale key means a newer request is in flight. */
   key: string
   state: Extract<SearchState, { status: 'error' | 'success' }>
 }

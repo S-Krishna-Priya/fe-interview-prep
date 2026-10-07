@@ -1,16 +1,33 @@
-# React + Vite
+# fe-interview-prep
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Five React + TypeScript features, one per pull request. Built with Vite, React Router, Tailwind CSS and Vitest.
 
-Currently, two official plugins are available:
+## Run
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```sh
+npm install
+npm run dev
+```
 
-## React Compiler
+Open the printed URL. Each question has its own route: `/todo`, `/search`, `/wizard`, `/table`, `/login`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Checks
 
-## Expanding the Oxlint configuration
+```sh
+npm test            # unit tests (Vitest + Testing Library)
+npm run lint        # oxlint
+npm run typecheck   # tsc, strict mode
+npm run build       # typecheck + production build
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Questions
+
+| # | Question | PR link |
+|---|---|---|
+| 1 | Todo App | |
+| 2 | Live Search | |
+| 3 | Registration Wizard | |
+| 4 | Data Table | |
+| 5 | Login & Session Handling | |
+
+Video:

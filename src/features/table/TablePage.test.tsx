@@ -35,6 +35,9 @@ function HistoryProbe() {
       <button type="button" onClick={() => navigate(-1)}>
         Back
       </button>
+      <button type="button" onClick={() => navigate(1)}>
+        Forward
+      </button>
     </>
   )
 }
@@ -194,10 +197,11 @@ describe('TablePage', () => {
     for (const th of screen.getAllByRole('columnheader')) {
       expect(th).toHaveAttribute('aria-sort', 'none')
     }
-    expect(summary()).toBe('No rows')
+    expect(screen.getByLabelText('Country')).toHaveValue('')
+    expect(summary()).toBe('Showing 51–60 of 60 · Page 6 of 6')
   })
 
-  it('moves back to the previous view with the browser history', async () => {
+  it('moves between views with the browser history', async () => {
     const { user } = renderPage()
     await screen.findByRole('table', { name: 'People' })
 
@@ -205,9 +209,12 @@ describe('TablePage', () => {
     expect(header('Age')).toHaveAttribute('aria-sort', 'ascending')
 
     await user.click(screen.getByRole('button', { name: 'Back' }))
-
     expect(header('Age')).toHaveAttribute('aria-sort', 'none')
     expect(currentUrl()).toBe('')
+
+    await user.click(screen.getByRole('button', { name: 'Forward' }))
+    expect(header('Age')).toHaveAttribute('aria-sort', 'ascending')
+    expect(currentUrl()).toBe('?sort=age&dir=asc')
   })
 
   it('shows an error with a retry button that fetches again', async () => {

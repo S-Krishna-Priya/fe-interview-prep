@@ -52,7 +52,7 @@ export function sortRows<Row>(rows: Row[], columns: Column<Row>[], sort: Sort | 
 }
 
 export function distinctValues<Row>(rows: Row[], read: (row: Row) => string): string[] {
-  return [...new Set(rows.map(read))].sort((a, b) => a.localeCompare(b))
+  return [...new Set(rows.map(read))].sort(textCollator.compare)
 }
 
 export type Page<Row> = {

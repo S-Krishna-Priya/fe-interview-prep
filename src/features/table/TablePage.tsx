@@ -1,9 +1,10 @@
 import DataTable from '../../lib/table/DataTable.tsx'
-import FilterBar from '../../lib/table/FilterBar.tsx'
+import FilterBar, { type FilterOption } from '../../lib/table/FilterBar.tsx'
 import Pagination from '../../lib/table/Pagination.tsx'
 import SearchInput from '../../lib/table/SearchInput.tsx'
 import { distinctValues, filterRows, nextSort, paginate, searchRows, sortRows } from '../../lib/table/query.ts'
 import type { TableViewOptions } from '../../lib/table/tableView.ts'
+import type { FilterValues } from '../../lib/table/types.ts'
 import { useTableView } from '../../lib/table/useTableView.ts'
 import type { User } from './api.ts'
 import { userColumns, userFilters } from './columns.tsx'
@@ -20,6 +21,15 @@ const VIEW_OPTIONS: TableViewOptions = {
 
 const NO_USERS: User[] = []
 
+function knownFilterValues(selected: FilterValues, filters: FilterOption[]): FilterValues {
+  return Object.fromEntries(
+    filters.flatMap((filter) => {
+      const value = selected[filter.id]
+      return value && filter.options.includes(value) ? [[filter.id, value]] : []
+    }),
+  )
+}
+
 type TablePageProps = {
   searchDelayMs?: number
 }
@@ -29,16 +39,18 @@ export default function TablePage({ searchDelayMs }: TablePageProps) {
   const { view, setSearch, setSort, setFilter, setPage, setPageSize } = useTableView(VIEW_OPTIONS)
 
   const users = state.status === 'success' ? state.users : NO_USERS
-  const searched = searchRows(users, userColumns, view.search)
-  const filtered = filterRows(searched, userFilters, view.filters)
-  const sorted = sortRows(filtered, userColumns, view.sort)
-  const page = paginate(sorted, view.page, view.pageSize)
-
   const filterOptions = userFilters.map((filter) => ({
     id: filter.id,
     label: filter.label,
     options: distinctValues(users, filter.value),
   }))
+  const filters =
+    state.status === 'success' ? knownFilterValues(view.filters, filterOptions) : view.filters
+
+  const searched = searchRows(users, userColumns, view.search)
+  const filtered = filterRows(searched, userFilters, filters)
+  const sorted = sortRows(filtered, userColumns, view.sort)
+  const page = paginate(sorted, view.page, view.pageSize)
 
   return (
     <>
@@ -58,7 +70,7 @@ export default function TablePage({ searchDelayMs }: TablePageProps) {
             placeholder="Name, email or country"
           />
         </div>
-        <FilterBar filters={filterOptions} values={view.filters} onChange={setFilter} />
+        <FilterBar filters={filterOptions} values={filters} onChange={setFilter} />
       </div>
 
       {state.status === 'loading' && (

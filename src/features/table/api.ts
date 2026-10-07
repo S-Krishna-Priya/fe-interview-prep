@@ -48,7 +48,8 @@ function isRandomUser(value: unknown): value is RandomUser {
     isRecord(dob) &&
     typeof dob.age === 'number' &&
     isRecord(registered) &&
-    hasString(registered, 'date') &&
+    typeof registered.date === 'string' &&
+    !Number.isNaN(Date.parse(registered.date)) &&
     isRecord(picture) &&
     hasString(picture, 'thumbnail')
   )

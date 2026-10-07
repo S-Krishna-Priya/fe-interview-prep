@@ -3,6 +3,7 @@ import { Navigate, NavLink, Route, Routes } from 'react-router'
 import TodoPage from './features/todo/TodoPage.tsx'
 
 const SearchPage = lazy(() => import('./features/search/SearchPage.tsx'))
+const TablePage = lazy(() => import('./features/table/TablePage.tsx'))
 
 const questions = [
   { path: '/todo', label: 'Q1 Todo' },
@@ -48,7 +49,7 @@ export default function App() {
             <Route path="/todo" element={<TodoPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/wizard" element={<NotBuiltYet title="Registration Wizard" />} />
-            <Route path="/table" element={<NotBuiltYet title="Data Table" />} />
+            <Route path="/table" element={<TablePage />} />
             <Route path="/login" element={<NotBuiltYet title="Login & Session Handling" />} />
           </Routes>
         </Suspense>

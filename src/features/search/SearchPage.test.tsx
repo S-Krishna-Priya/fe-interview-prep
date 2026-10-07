@@ -138,6 +138,20 @@ describe('SearchPage', () => {
     expect(screen.queryByRole('heading', { name: 'Phone' })).not.toBeInTheDocument()
   })
 
+  it('keeps one status region mounted across state changes so announcements are reliable', async () => {
+    fetchMock.mockResolvedValue(resultsResponse([product(1, 'Phone')]))
+    const { user, input } = renderPage()
+
+    const status = screen.getByRole('status')
+    expect(status).toHaveTextContent('Start typing to search products.')
+
+    await user.type(input, 'phone')
+    await screen.findByRole('heading', { name: 'Phone' })
+
+    expect(screen.getByRole('status')).toBe(status)
+    expect(status).toHaveTextContent("1 result for 'phone'")
+  })
+
   it('aborts the in-flight request when the page unmounts', async () => {
     const requests = captureRequests()
     const { user, input, unmount } = renderPage()

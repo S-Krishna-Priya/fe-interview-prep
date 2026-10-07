@@ -39,7 +39,7 @@ export default function SearchPage({ debounceMs = DEFAULT_DEBOUNCE_MS }: SearchP
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Try “phone” or “laptop”"
           autoComplete="off"
-          className="mt-1 w-full rounded border border-gray-300 px-3 py-2 focus:border-gray-900 focus:outline-none"
+          className="mt-1 w-full rounded border border-gray-300 px-3 py-2"
         />
       </div>
 

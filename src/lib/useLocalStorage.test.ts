@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useLocalStorage } from './useLocalStorage.ts'
 
 const isNumber = (value: unknown): value is number => typeof value === 'number'
@@ -7,6 +7,10 @@ const isNumber = (value: unknown): value is number => typeof value === 'number'
 describe('useLocalStorage', () => {
   beforeEach(() => {
     window.localStorage.clear()
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   it('uses the initial value when nothing is stored', () => {
@@ -24,6 +28,17 @@ describe('useLocalStorage', () => {
     const { result } = renderHook(() => useLocalStorage('count', 1))
     act(() => result.current[1](7))
     expect(window.localStorage.getItem('count')).toBe('7')
+  })
+
+  it('keeps the in-memory value when the storage write fails', () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('storage blocked')
+    })
+    const { result } = renderHook(() => useLocalStorage('count', 1))
+
+    act(() => result.current[1](7))
+
+    expect(result.current[0]).toBe(7)
   })
 
   it('falls back to the initial value for invalid JSON', () => {

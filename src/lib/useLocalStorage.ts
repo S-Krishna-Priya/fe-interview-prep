@@ -23,7 +23,11 @@ export function useLocalStorage<T>(key: string, initialValue: T, isValid?: Valid
   const [value, setValue] = useState<T>(() => readStorage(key, initialValue, isValid))
 
   useEffect(() => {
-    window.localStorage.setItem(key, JSON.stringify(value))
+    try {
+      window.localStorage.setItem(key, JSON.stringify(value))
+    } catch {
+      // Storage is blocked or full; the in-memory state still works for this session.
+    }
   }, [key, value])
 
   return [value, setValue] as const

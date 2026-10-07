@@ -9,8 +9,21 @@ const FILTERS: { value: Filter; label: string }[] = [
   { value: 'completed', label: 'Completed' },
 ]
 
+function isTodo(value: unknown): value is Todo {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'id' in value &&
+    typeof value.id === 'string' &&
+    'title' in value &&
+    typeof value.title === 'string' &&
+    'completed' in value &&
+    typeof value.completed === 'boolean'
+  )
+}
+
 function isTodoList(value: unknown): value is Todo[] {
-  return Array.isArray(value)
+  return Array.isArray(value) && value.every(isTodo)
 }
 
 function isFilter(value: unknown): value is Filter {
@@ -31,6 +44,8 @@ export default function TodoPage() {
   const visibleTodos = todos.filter((todo) => matchesFilter(todo, filter))
   const activeCount = todos.filter((todo) => !todo.completed).length
   const completedCount = todos.length - activeCount
+  const emptyMessage =
+    todos.length === 0 ? 'No todos yet. Add one above.' : 'Nothing to show for this filter.'
 
   function addTodo(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -102,9 +117,7 @@ export default function TodoPage() {
       </div>
 
       {visibleTodos.length === 0 ? (
-        <p className="mt-6 text-gray-500">
-          {todos.length === 0 ? 'No todos yet. Add one above.' : 'Nothing to show for this filter.'}
-        </p>
+        <p className="mt-6 text-gray-500">{emptyMessage}</p>
       ) : (
         <ul className="mt-4 divide-y divide-gray-200 rounded border border-gray-200 bg-white px-3">
           {visibleTodos.map((todo) => (

@@ -70,67 +70,74 @@ export default function TodoPage() {
   return (
     <>
       <h1 className="text-2xl font-semibold">Todo App</h1>
+      <p className="mt-1 text-sm text-muted">Your list and filter are saved in this browser.</p>
 
-      <form onSubmit={addTodo} className="mt-4 flex gap-2">
-        <input
-          aria-label="New todo"
-          placeholder="What needs to be done?"
-          value={newTitle}
-          onChange={(event) => setNewTitle(event.target.value)}
-          className="flex-1 rounded border border-gray-300 px-3 py-2"
-        />
-        <button
-          type="submit"
-          className="rounded bg-gray-900 px-4 py-2 font-medium text-white hover:bg-gray-700"
-        >
-          Add
-        </button>
-      </form>
+      <section className="mt-6 rounded-xl border border-line bg-surface p-5 shadow-sm">
+        <form onSubmit={addTodo} className="flex gap-2">
+          <input
+            aria-label="New todo"
+            placeholder="What needs to be done?"
+            value={newTitle}
+            onChange={(event) => setNewTitle(event.target.value)}
+            className="flex-1 rounded-md border border-line px-3 py-2 placeholder:text-muted/70 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+          />
+          <button
+            type="submit"
+            className="rounded-md bg-primary px-4 py-2 font-medium text-white transition-colors hover:bg-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            Add
+          </button>
+        </form>
 
-      <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-        <span className="mr-auto text-gray-600">
-          {activeCount} {activeCount === 1 ? 'item' : 'items'} left
-        </span>
-        <div role="group" aria-label="Filter todos" className="flex gap-1">
-          {FILTERS.map(({ value, label }) => (
-            <button
-              key={value}
-              type="button"
-              aria-pressed={filter === value}
-              onClick={() => setFilter(value)}
-              className={`rounded px-2 py-1 ${
-                filter === value ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
+          <span className="mr-auto text-muted">
+            {activeCount} {activeCount === 1 ? 'item' : 'items'} left
+          </span>
+          <div role="group" aria-label="Filter todos" className="flex gap-1 rounded-md bg-canvas p-1">
+            {FILTERS.map(({ value, label }) => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={filter === value}
+                onClick={() => setFilter(value)}
+                className={`rounded px-2.5 py-1 font-medium transition-colors ${
+                  filter === value
+                    ? 'bg-primary text-white'
+                    : 'text-muted hover:bg-primary-soft hover:text-primary'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={clearCompleted}
+            disabled={completedCount === 0}
+            className="rounded-md px-2.5 py-1 font-medium text-danger transition-colors hover:bg-danger-soft disabled:text-muted/60 disabled:hover:bg-transparent"
+          >
+            Clear completed
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={clearCompleted}
-          disabled={completedCount === 0}
-          className="rounded px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:text-gray-400 disabled:hover:bg-transparent"
-        >
-          Clear completed
-        </button>
-      </div>
 
-      {visibleTodos.length === 0 ? (
-        <p className="mt-6 text-gray-500">{emptyMessage}</p>
-      ) : (
-        <ul className="mt-4 divide-y divide-gray-200 rounded border border-gray-200 bg-white px-3">
-          {visibleTodos.map((todo) => (
-            <TodoItem
-              key={todo.id}
-              todo={todo}
-              onToggle={() => updateTodo(todo.id, { completed: !todo.completed })}
-              onRename={(title) => updateTodo(todo.id, { title })}
-              onDelete={() => deleteTodo(todo.id)}
-            />
-          ))}
-        </ul>
-      )}
+        {visibleTodos.length === 0 ? (
+          <p className="mt-6 rounded-md border border-dashed border-line py-8 text-center text-muted">
+            {emptyMessage}
+          </p>
+        ) : (
+          <ul className="mt-4 divide-y divide-line rounded-md border border-line">
+            {visibleTodos.map((todo) => (
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                onToggle={() => updateTodo(todo.id, { completed: !todo.completed })}
+                onRename={(title) => updateTodo(todo.id, { title })}
+                onDelete={() => deleteTodo(todo.id)}
+              />
+            ))}
+          </ul>
+        )}
+      </section>
     </>
   )
 }

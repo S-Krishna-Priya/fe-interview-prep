@@ -13,30 +13,35 @@ function NotBuiltYet({ title }: { title: string }) {
   return (
     <>
       <h1 className="text-2xl font-semibold">{title}</h1>
-      <p className="mt-2 text-gray-600">This question is not built yet.</p>
+      <p className="mt-2 text-muted">This question is not built yet.</p>
     </>
   )
 }
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <header className="border-b border-gray-200 bg-white">
-        <nav aria-label="Questions" className="mx-auto flex max-w-3xl flex-wrap gap-2 px-4 py-3">
-          {questions.map((question) => (
-            <NavLink
-              key={question.path}
-              to={question.path}
-              className={({ isActive }) =>
-                `rounded px-3 py-1.5 text-sm font-medium ${
-                  isActive ? 'bg-gray-900 text-white' : 'text-gray-700 hover:bg-gray-100'
-                }`
-              }
-            >
-              {question.label}
-            </NavLink>
-          ))}
-        </nav>
+    <div className="min-h-screen">
+      <header className="border-b border-line bg-surface">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-4 px-4 py-3">
+          <span className="font-semibold tracking-tight text-primary">FE Interview Prep</span>
+          <nav aria-label="Questions" className="flex flex-wrap gap-1">
+            {questions.map((question) => (
+              <NavLink
+                key={question.path}
+                to={question.path}
+                className={({ isActive }) =>
+                  `rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-primary text-white'
+                      : 'text-muted hover:bg-primary-soft hover:text-primary'
+                  }`
+                }
+              >
+                {question.label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
       </header>
       <main className="mx-auto max-w-3xl px-4 py-8">
         <Routes>

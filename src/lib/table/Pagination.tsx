@@ -13,7 +13,7 @@ type PaginationProps = {
 }
 
 const buttonClass =
-  'rounded border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-white'
+  'rounded px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400 disabled:hover:bg-transparent'
 
 export default function Pagination({
   page,

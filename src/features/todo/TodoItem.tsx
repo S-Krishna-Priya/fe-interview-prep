@@ -65,13 +65,25 @@ export default function TodoItem({ todo, onToggle, onRename, onDelete }: Props) 
         aria-label={`Mark "${todo.title}" as ${todo.completed ? 'active' : 'completed'}`}
         className="size-4"
       />
-      <span className={`flex-1 ${todo.completed ? 'text-gray-400 line-through' : ''}`}>
+      <span
+        className={`min-w-0 flex-1 break-words ${todo.completed ? 'text-gray-400 line-through' : ''}`}
+      >
         {todo.title}
       </span>
-      <button type="button" onClick={startEditing} className={buttonClass}>
+      <button
+        type="button"
+        onClick={startEditing}
+        aria-label={`Edit "${todo.title}"`}
+        className={buttonClass}
+      >
         Edit
       </button>
-      <button type="button" onClick={onDelete} className={buttonClass}>
+      <button
+        type="button"
+        onClick={onDelete}
+        aria-label={`Delete "${todo.title}"`}
+        className={buttonClass}
+      >
         Delete
       </button>
     </li>

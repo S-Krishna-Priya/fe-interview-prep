@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import TodoPage from './TodoPage.tsx'
@@ -7,11 +7,6 @@ async function addTodo(title: string) {
   const user = userEvent.setup()
   await user.type(screen.getByLabelText('New todo'), title)
   await user.click(screen.getByRole('button', { name: 'Add' }))
-}
-
-function visibleTitles() {
-  const list = screen.queryByRole('list')
-  return list ? within(list).getAllByRole('listitem').map((item) => item.textContent) : []
 }
 
 describe('TodoPage', () => {
@@ -45,16 +40,19 @@ describe('TodoPage', () => {
     expect(screen.getByText('0 items left')).toBeInTheDocument()
   })
 
-  it('completes a todo and updates the remaining count', async () => {
+  it('completes and reactivates a todo, updating the remaining count', async () => {
     const user = userEvent.setup()
     render(<TodoPage />)
     await addTodo('Buy milk')
     await addTodo('Walk dog')
 
     await user.click(screen.getByRole('checkbox', { name: 'Mark "Buy milk" as completed' }))
-
     expect(screen.getByText('1 item left')).toBeInTheDocument()
     expect(screen.getByRole('checkbox', { name: 'Mark "Buy milk" as active' })).toBeChecked()
+
+    await user.click(screen.getByRole('checkbox', { name: 'Mark "Buy milk" as active' }))
+    expect(screen.getByText('2 items left')).toBeInTheDocument()
+    expect(screen.getByRole('checkbox', { name: 'Mark "Buy milk" as completed' })).not.toBeChecked()
   })
 
   it('edits a todo title', async () => {
@@ -62,8 +60,8 @@ describe('TodoPage', () => {
     render(<TodoPage />)
     await addTodo('Buy milk')
 
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
-    const input = screen.getByLabelText('Edit "Buy milk"')
+    await user.click(screen.getByRole('button', { name: 'Edit "Buy milk"' }))
+    const input = screen.getByRole('textbox', { name: 'Edit "Buy milk"' })
     await user.clear(input)
     await user.type(input, 'Buy oat milk{Enter}')
 
@@ -76,15 +74,15 @@ describe('TodoPage', () => {
     render(<TodoPage />)
     await addTodo('Buy milk')
 
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
-    await user.clear(screen.getByLabelText('Edit "Buy milk"'))
+    await user.click(screen.getByRole('button', { name: 'Edit "Buy milk"' }))
+    await user.clear(screen.getByRole('textbox', { name: 'Edit "Buy milk"' }))
     await user.click(screen.getByRole('button', { name: 'Save' }))
     expect(screen.getByText('Buy milk')).toBeInTheDocument()
 
-    await user.click(screen.getByRole('button', { name: 'Edit' }))
-    await user.type(screen.getByLabelText('Edit "Buy milk"'), ' and eggs{Escape}')
+    await user.click(screen.getByRole('button', { name: 'Edit "Buy milk"' }))
+    await user.type(screen.getByRole('textbox', { name: 'Edit "Buy milk"' }), ' and eggs{Escape}')
     expect(screen.getByText('Buy milk')).toBeInTheDocument()
-    expect(screen.queryByLabelText('Edit "Buy milk"')).not.toBeInTheDocument()
+    expect(screen.queryByRole('textbox', { name: 'Edit "Buy milk"' })).not.toBeInTheDocument()
   })
 
   it('deletes a todo', async () => {
@@ -92,7 +90,7 @@ describe('TodoPage', () => {
     render(<TodoPage />)
     await addTodo('Buy milk')
 
-    await user.click(screen.getByRole('button', { name: 'Delete' }))
+    await user.click(screen.getByRole('button', { name: 'Delete "Buy milk"' }))
 
     expect(screen.queryByText('Buy milk')).not.toBeInTheDocument()
     expect(screen.getByText('No todos yet. Add one above.')).toBeInTheDocument()
@@ -106,14 +104,17 @@ describe('TodoPage', () => {
     await user.click(screen.getByRole('checkbox', { name: 'Mark "Buy milk" as completed' }))
 
     await user.click(screen.getByRole('button', { name: 'Active' }))
-    expect(visibleTitles()).toEqual(['Walk dogEditDelete'])
+    expect(screen.getByText('Walk dog')).toBeInTheDocument()
+    expect(screen.queryByText('Buy milk')).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Active' })).toHaveAttribute('aria-pressed', 'true')
 
     await user.click(screen.getByRole('button', { name: 'Completed' }))
-    expect(visibleTitles()).toEqual(['Buy milkEditDelete'])
+    expect(screen.getByText('Buy milk')).toBeInTheDocument()
+    expect(screen.queryByText('Walk dog')).not.toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: 'All' }))
-    expect(visibleTitles()).toHaveLength(2)
+    expect(screen.getByText('Buy milk')).toBeInTheDocument()
+    expect(screen.getByText('Walk dog')).toBeInTheDocument()
   })
 
   it('shows a filter-specific empty state', async () => {
@@ -157,8 +158,12 @@ describe('TodoPage', () => {
     expect(screen.getByRole('button', { name: 'Completed' })).toHaveAttribute('aria-pressed', 'true')
   })
 
-  it('ignores corrupt stored data instead of crashing', () => {
-    window.localStorage.setItem('todos', '"not a list"')
+  it.each([
+    ['a non-array', '"not a list"'],
+    ['an array with a null entry', '[null]'],
+    ['an array of malformed objects', '[{"id":1}]'],
+  ])('ignores corrupt stored todos (%s) instead of crashing', (_label, stored) => {
+    window.localStorage.setItem('todos', stored)
     window.localStorage.setItem('todos.filter', '"bogus"')
 
     render(<TodoPage />)

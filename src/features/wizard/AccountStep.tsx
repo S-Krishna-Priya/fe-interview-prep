@@ -2,20 +2,28 @@ import { useId } from 'react'
 import Field from './Field.tsx'
 import { PRIMARY_BUTTON } from './styles.ts'
 import type { AccountValues, FieldErrors } from './types.ts'
-import { useFocusFirstInvalid } from './useFocusFirstInvalid.ts'
+import { useStepFocus } from './useStepFocus.ts'
 import { PASSWORD_MIN_LENGTH } from './validation.ts'
 
 type AccountStepProps = {
   values: AccountValues
   errors: FieldErrors<AccountValues>
   attempt: number
+  navigation: number
   onChange: (field: keyof AccountValues, value: string) => void
   onNext: () => void
 }
 
-export default function AccountStep({ values, errors, attempt, onChange, onNext }: AccountStepProps) {
+export default function AccountStep({
+  values,
+  errors,
+  attempt,
+  navigation,
+  onChange,
+  onNext,
+}: AccountStepProps) {
   const headingId = useId()
-  const formRef = useFocusFirstInvalid(attempt)
+  const { formRef, headingRef } = useStepFocus(attempt, navigation)
 
   return (
     <form
@@ -28,7 +36,7 @@ export default function AccountStep({ values, errors, attempt, onChange, onNext 
       }}
       className="mt-6 space-y-4"
     >
-      <h2 id={headingId} className="text-lg font-medium">
+      <h2 ref={headingRef} id={headingId} tabIndex={-1} className="text-lg font-medium">
         Account
       </h2>
       <Field

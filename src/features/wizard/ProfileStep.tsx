@@ -2,12 +2,13 @@ import { useId } from 'react'
 import Field from './Field.tsx'
 import { PRIMARY_BUTTON, SECONDARY_BUTTON } from './styles.ts'
 import type { FieldErrors, ProfileValues } from './types.ts'
-import { useFocusFirstInvalid } from './useFocusFirstInvalid.ts'
+import { useStepFocus } from './useStepFocus.ts'
 
 type ProfileStepProps = {
   values: ProfileValues
   errors: FieldErrors<ProfileValues>
   attempt: number
+  navigation: number
   onChange: (field: keyof ProfileValues, value: string) => void
   onBack: () => void
   onNext: () => void
@@ -17,12 +18,13 @@ export default function ProfileStep({
   values,
   errors,
   attempt,
+  navigation,
   onChange,
   onBack,
   onNext,
 }: ProfileStepProps) {
   const headingId = useId()
-  const formRef = useFocusFirstInvalid(attempt)
+  const { formRef, headingRef } = useStepFocus(attempt, navigation)
 
   return (
     <form
@@ -35,7 +37,7 @@ export default function ProfileStep({
       }}
       className="mt-6 space-y-4"
     >
-      <h2 id={headingId} className="text-lg font-medium">
+      <h2 ref={headingRef} id={headingId} tabIndex={-1} className="text-lg font-medium">
         Profile
       </h2>
       <Field

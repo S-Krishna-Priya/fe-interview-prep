@@ -40,7 +40,7 @@ async function reachReview(user: User) {
   await pressNext(user)
   await fillProfile(user)
   await pressNext(user)
-  expect(screen.getByRole('heading', { name: 'Review' })).toBeInTheDocument()
+  expect(screen.getByRole('heading', { name: 'Review' })).toHaveFocus()
 }
 
 function currentStep() {
@@ -65,6 +65,7 @@ describe('WizardPage', () => {
     renderPage()
 
     expect(screen.getByRole('heading', { name: 'Account' })).toBeInTheDocument()
+    expect(document.body).toHaveFocus()
     expect(currentStep()).toHaveTextContent('Account')
   })
 
@@ -107,11 +108,12 @@ describe('WizardPage', () => {
 
     await fillAccount(user)
     await pressNext(user)
-    expect(screen.getByRole('heading', { name: 'Profile' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Profile' })).toHaveFocus()
     expect(currentStep()).toHaveTextContent('Profile')
 
     await user.click(screen.getByRole('button', { name: 'Back' }))
 
+    expect(screen.getByRole('heading', { name: 'Account' })).toHaveFocus()
     expect(screen.getByLabelText('Email')).toHaveValue(EMAIL)
     expect(screen.getByLabelText('Password')).toHaveValue(PASSWORD)
     expect(screen.getByLabelText('Confirm password')).toHaveValue(PASSWORD)
@@ -147,7 +149,7 @@ describe('WizardPage', () => {
 
     await user.click(screen.getByRole('button', { name: 'Edit account' }))
 
-    expect(screen.getByRole('heading', { name: 'Account' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Account' })).toHaveFocus()
     expect(screen.getByLabelText('Email')).toHaveValue(EMAIL)
   })
 
@@ -176,7 +178,7 @@ describe('WizardPage', () => {
 
     await user.click(screen.getByRole('button', { name: 'Register another' }))
 
-    expect(screen.getByRole('heading', { name: 'Account' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Account' })).toHaveFocus()
     expect(screen.getByLabelText('Email')).toHaveValue('')
   })
 

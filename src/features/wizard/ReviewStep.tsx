@@ -1,10 +1,12 @@
 import { useId, type ReactNode } from 'react'
 import { LINK_BUTTON, PRIMARY_BUTTON, SECONDARY_BUTTON } from './styles.ts'
 import type { RegistrationValues, StepId, Submission } from './types.ts'
+import { useStepFocus } from './useStepFocus.ts'
 
 type ReviewStepProps = {
   values: RegistrationValues
   submission: Submission
+  navigation: number
   onEdit: (step: StepId) => void
   onBack: () => void
   onSubmit: () => void
@@ -42,12 +44,21 @@ function ReviewSection({ title, editLabel, onEdit, rows }: ReviewSectionProps) {
   )
 }
 
-export default function ReviewStep({ values, submission, onEdit, onBack, onSubmit }: ReviewStepProps) {
+export default function ReviewStep({
+  values,
+  submission,
+  navigation,
+  onEdit,
+  onBack,
+  onSubmit,
+}: ReviewStepProps) {
   const headingId = useId()
+  const { formRef, headingRef } = useStepFocus(0, navigation)
   const submitting = submission.status === 'submitting'
 
   return (
     <form
+      ref={formRef}
       noValidate
       aria-labelledby={headingId}
       onSubmit={(event) => {
@@ -56,7 +67,7 @@ export default function ReviewStep({ values, submission, onEdit, onBack, onSubmi
       }}
       className="mt-6 space-y-4"
     >
-      <h2 id={headingId} className="text-lg font-medium">
+      <h2 ref={headingRef} id={headingId} tabIndex={-1} className="text-lg font-medium">
         Review
       </h2>
       <ReviewSection

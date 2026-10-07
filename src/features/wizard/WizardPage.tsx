@@ -34,6 +34,7 @@ export default function WizardPage() {
   const [accountErrors, setAccountErrors] = useState<FieldErrors<AccountValues>>({})
   const [profileErrors, setProfileErrors] = useState<FieldErrors<ProfileValues>>({})
   const [attempt, setAttempt] = useState(0)
+  const [navigation, setNavigation] = useState(0)
   const [submission, setSubmission] = useState<Submission>(IDLE)
 
   const account: AccountValues = { email: draft.email, ...secrets }
@@ -45,6 +46,12 @@ export default function WizardPage() {
 
   function goTo(step: StepId) {
     setDraft((current) => ({ ...current, step }))
+    setNavigation((current) => current + 1)
+  }
+
+  function reset() {
+    setSubmission(IDLE)
+    setNavigation((current) => current + 1)
   }
 
   function failAttempt() {
@@ -109,7 +116,7 @@ export default function WizardPage() {
     <>
       <h1 className="text-2xl font-semibold">Registration Wizard</h1>
       {submission.status === 'success' ? (
-        <RegistrationSuccess id={submission.id} onReset={() => setSubmission(IDLE)} />
+        <RegistrationSuccess id={submission.id} onReset={reset} />
       ) : (
         <>
           <StepIndicator current={draft.step} />
@@ -118,6 +125,7 @@ export default function WizardPage() {
               values={account}
               errors={accountErrors}
               attempt={attempt}
+              navigation={navigation}
               onChange={updateAccount}
               onNext={nextFromAccount}
             />
@@ -127,6 +135,7 @@ export default function WizardPage() {
               values={profile}
               errors={profileErrors}
               attempt={attempt}
+              navigation={navigation}
               onChange={updateProfile}
               onBack={() => goTo('account')}
               onNext={nextFromProfile}
@@ -136,6 +145,7 @@ export default function WizardPage() {
             <ReviewStep
               values={{ ...account, ...profile }}
               submission={submission}
+              navigation={navigation}
               onEdit={goTo}
               onBack={() => goTo('profile')}
               onSubmit={submit}

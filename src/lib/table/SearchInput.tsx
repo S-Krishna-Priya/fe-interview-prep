@@ -22,7 +22,7 @@ export default function SearchInput({
 
   if (value !== lastCommitted) {
     setLastCommitted(value)
-    setDraft(value)
+    if (value !== draft.trim()) setDraft(value)
   }
 
   useEffect(() => () => window.clearTimeout(timer.current), [])

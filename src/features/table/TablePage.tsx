@@ -55,7 +55,7 @@ export default function TablePage({ searchDelayMs }: TablePageProps) {
             value={view.search}
             onCommit={setSearch}
             delayMs={searchDelayMs}
-            placeholder="Name, email, city or country"
+            placeholder="Name, email or country"
           />
         </div>
         <FilterBar filters={filterOptions} values={view.filters} onChange={setFilter} />

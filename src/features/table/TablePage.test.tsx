@@ -125,6 +125,28 @@ describe('TablePage', () => {
     expect(currentUrl()).toBe('?q=person12%40')
   })
 
+  it('searches the displayed text and returns to page 1 when the search changes', async () => {
+    const { user } = renderPage('/table?page=2')
+    await screen.findByRole('table', { name: 'People' })
+    expect(summary()).toBe('Showing 11–20 of 60 · Page 2 of 6')
+
+    await user.type(screen.getByLabelText('Search people'), 'feb 2015')
+
+    expect(await screen.findByText('Showing 1–10 of 60 · Page 1 of 6')).toBeInTheDocument()
+    expect(currentUrl()).toBe('?q=feb+2015')
+  })
+
+  it('keeps a trailing space in the search box after the trimmed query is committed', async () => {
+    const { user } = renderPage()
+    await screen.findByRole('table', { name: 'People' })
+    const input = screen.getByLabelText('Search people')
+
+    await user.type(input, 'person ')
+    expect(await screen.findByText('?q=person')).toBeInTheDocument()
+
+    expect(input).toHaveValue('person ')
+  })
+
   it('returns to page 1 when a column filter changes', async () => {
     const { user } = renderPage()
     await screen.findByRole('table', { name: 'People' })

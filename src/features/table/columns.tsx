@@ -3,6 +3,10 @@ import type { User } from './api.ts'
 
 const dateFormat = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' })
 
+function registeredOn(user: User) {
+  return dateFormat.format(new Date(user.registeredAt))
+}
+
 export const userColumns: Column<User>[] = [
   {
     id: 'name',
@@ -33,7 +37,8 @@ export const userColumns: Column<User>[] = [
     id: 'registered',
     header: 'Registered',
     value: (user) => user.registeredAt,
-    cell: (user) => dateFormat.format(new Date(user.registeredAt)),
+    text: registeredOn,
+    cell: registeredOn,
     sortable: true,
   },
 ]

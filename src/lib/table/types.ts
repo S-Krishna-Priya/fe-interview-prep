@@ -6,6 +6,7 @@ export type Column<Row> = {
   id: string
   header: string
   value: (row: Row) => CellValue
+  text?: (row: Row) => string
   cell?: (row: Row) => ReactNode
   sortable?: boolean
   align?: 'left' | 'right'

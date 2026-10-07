@@ -7,7 +7,7 @@ type Person = { name: string; age: number | null; team: string }
 const columns: Column<Person>[] = [
   { id: 'name', header: 'Name', value: (row) => row.name, sortable: true },
   { id: 'age', header: 'Age', value: (row) => row.age, sortable: true },
-  { id: 'team', header: 'Team', value: (row) => row.team },
+  { id: 'team', header: 'Team', value: (row) => row.team, text: (row) => `Team ${row.team}` },
 ]
 
 const teamFilter: ColumnFilter<Person> = { id: 'team', label: 'Team', value: (row) => row.team }
@@ -69,6 +69,10 @@ describe('searchRows', () => {
 
   it('returns every row for an empty query', () => {
     expect(searchRows(people, columns, '   ')).toBe(people)
+  })
+
+  it('searches the display text of a column when it differs from the sort value', () => {
+    expect(searchRows(people, columns, 'team r').map((row) => row.name)).toEqual(['adam', 'Ben'])
   })
 })
 

@@ -4,6 +4,7 @@ import TodoPage from './features/todo/TodoPage.tsx'
 
 const SearchPage = lazy(() => import('./features/search/SearchPage.tsx'))
 const WizardPage = lazy(() => import('./features/wizard/WizardPage.tsx'))
+const TablePage = lazy(() => import('./features/table/TablePage.tsx'))
 
 const questions = [
   { path: '/todo', label: 'Q1 Todo' },
@@ -49,7 +50,7 @@ export default function App() {
             <Route path="/todo" element={<TodoPage />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/wizard" element={<WizardPage />} />
-            <Route path="/table" element={<NotBuiltYet title="Data Table" />} />
+            <Route path="/table" element={<TablePage />} />
             <Route path="/login" element={<NotBuiltYet title="Login & Session Handling" />} />
           </Routes>
         </Suspense>

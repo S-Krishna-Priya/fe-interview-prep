@@ -1,6 +1,8 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, NavLink, Route, Routes } from 'react-router'
-import SearchPage from './features/search/SearchPage.tsx'
 import TodoPage from './features/todo/TodoPage.tsx'
+
+const SearchPage = lazy(() => import('./features/search/SearchPage.tsx'))
 
 const questions = [
   { path: '/todo', label: 'Q1 Todo' },
@@ -40,14 +42,16 @@ export default function App() {
         </nav>
       </header>
       <main className="mx-auto max-w-3xl px-4 py-8">
-        <Routes>
-          <Route path="/" element={<Navigate to="/todo" replace />} />
-          <Route path="/todo" element={<TodoPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/wizard" element={<NotBuiltYet title="Registration Wizard" />} />
-          <Route path="/table" element={<NotBuiltYet title="Data Table" />} />
-          <Route path="/login" element={<NotBuiltYet title="Login & Session Handling" />} />
-        </Routes>
+        <Suspense fallback={<p role="status">Loading…</p>}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/todo" replace />} />
+            <Route path="/todo" element={<TodoPage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/wizard" element={<NotBuiltYet title="Registration Wizard" />} />
+            <Route path="/table" element={<NotBuiltYet title="Data Table" />} />
+            <Route path="/login" element={<NotBuiltYet title="Login & Session Handling" />} />
+          </Routes>
+        </Suspense>
       </main>
     </div>
   )

@@ -6,6 +6,7 @@ import TodoPage from './features/todo/TodoPage.tsx'
 
 const SearchPage = lazy(() => import('./features/search/SearchPage.tsx'))
 const WizardPage = lazy(() => import('./features/wizard/WizardPage.tsx'))
+const TablePage = lazy(() => import('./features/table/TablePage.tsx'))
 const LoginPage = lazy(() => import('./features/auth/LoginPage.tsx'))
 const AccountPage = lazy(() => import('./features/auth/AccountPage.tsx'))
 const AdminPage = lazy(() => import('./features/auth/AdminPage.tsx'))
@@ -17,15 +18,6 @@ const questions = [
   { path: '/table', label: 'Q4 Table' },
   { path: '/login', label: 'Q5 Login' },
 ]
-
-function NotBuiltYet({ title }: { title: string }) {
-  return (
-    <>
-      <h1 className="text-2xl font-semibold">{title}</h1>
-      <p className="mt-2 text-gray-600">This question is not built yet.</p>
-    </>
-  )
-}
 
 export default function App() {
   return (
@@ -55,7 +47,7 @@ export default function App() {
               <Route path="/todo" element={<TodoPage />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/wizard" element={<WizardPage />} />
-              <Route path="/table" element={<NotBuiltYet title="Data Table" />} />
+              <Route path="/table" element={<TablePage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route
                 path="/account"

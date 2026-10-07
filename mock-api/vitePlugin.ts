@@ -67,6 +67,9 @@ function mockApi(req: unknown, res: unknown, next: () => void) {
     }
     res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify(response.body))
+  }).catch(() => {
+    res.statusCode = 500
+    res.end()
   })
 }
 

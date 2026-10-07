@@ -10,7 +10,7 @@ import {
   type User,
 } from './types.ts'
 
-export class ApiError extends Error {
+class ApiError extends Error {
   readonly status: number
 
   constructor(status: number, message: string) {
@@ -111,6 +111,8 @@ export async function logout(): Promise<void> {
   accessToken = null
   // Revoking on the server is best effort; the local session ends either way.
   await send('/api/auth/logout', token, { method: 'POST' }).catch(() => undefined)
+  // A refresh already in flight when sign-out started would otherwise set a token afterwards.
+  accessToken = null
 }
 
 export async function restoreSession(): Promise<Session | null> {

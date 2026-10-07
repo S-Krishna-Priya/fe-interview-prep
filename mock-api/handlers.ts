@@ -2,7 +2,7 @@ import { isRecord, type AdminStats, type Order, type User } from '../src/feature
 
 export const ACCESS_TOKEN_TTL_MS = 30_000
 export const REFRESH_TOKEN_TTL_MS = 10 * 60_000
-export const REFRESH_COOKIE = 'refresh_token'
+const REFRESH_COOKIE = 'refresh_token'
 const REFRESH_COOKIE_PATH = '/api/auth'
 
 export type MockRequest = {

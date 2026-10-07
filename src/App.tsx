@@ -1,9 +1,14 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, NavLink, Route, Routes } from 'react-router'
+import AuthProvider from './features/auth/AuthProvider.tsx'
+import RequireAuth from './features/auth/RequireAuth.tsx'
 import TodoPage from './features/todo/TodoPage.tsx'
 
 const SearchPage = lazy(() => import('./features/search/SearchPage.tsx'))
 const WizardPage = lazy(() => import('./features/wizard/WizardPage.tsx'))
+const LoginPage = lazy(() => import('./features/auth/LoginPage.tsx'))
+const AccountPage = lazy(() => import('./features/auth/AccountPage.tsx'))
+const AdminPage = lazy(() => import('./features/auth/AdminPage.tsx'))
 
 const questions = [
   { path: '/todo', label: 'Q1 Todo' },
@@ -43,16 +48,34 @@ export default function App() {
         </nav>
       </header>
       <main className="mx-auto max-w-3xl px-4 py-8">
-        <Suspense fallback={<p role="status">Loading…</p>}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/todo" replace />} />
-            <Route path="/todo" element={<TodoPage />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/wizard" element={<WizardPage />} />
-            <Route path="/table" element={<NotBuiltYet title="Data Table" />} />
-            <Route path="/login" element={<NotBuiltYet title="Login & Session Handling" />} />
-          </Routes>
-        </Suspense>
+        <AuthProvider>
+          <Suspense fallback={<p role="status">Loading…</p>}>
+            <Routes>
+              <Route path="/" element={<Navigate to="/todo" replace />} />
+              <Route path="/todo" element={<TodoPage />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/wizard" element={<WizardPage />} />
+              <Route path="/table" element={<NotBuiltYet title="Data Table" />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route
+                path="/account"
+                element={
+                  <RequireAuth>
+                    <AccountPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <RequireAuth role="admin">
+                    <AdminPage />
+                  </RequireAuth>
+                }
+              />
+            </Routes>
+          </Suspense>
+        </AuthProvider>
       </main>
     </div>
   )
